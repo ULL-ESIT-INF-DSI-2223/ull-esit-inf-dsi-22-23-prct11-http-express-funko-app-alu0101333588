@@ -6,31 +6,39 @@ import {spawn} from 'child_process';
 
 const app = express();
 
-//const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../public');
-//app.use(express.static(__dirname));
-
+const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../public');
+app.use(express.static(__dirname));
 
 app.get('/notes', (req, res) => {
 
-    // req.query.title as string
-    //const childProc = spawn(req.query.cmd as string, ['-la']);
+  // req.query.title as string
+  //const childProc = spawn(req.query.cmd as string, ['-la']);
+
+  if(!req.query.cmd) { 
+    return res.send({ 
+      error: "Se requiere introducir un nombre de comando con el atributo 'cmd'", 
+    }); 
+  } 
+
+  let comando : string = req.query.cmd as string;
   let argumentos : string[] = [];
+
+  if (req.query.args) { 
+    argumentos= (req.query.args as string).split(" "); 
+  } 
+
   console.log(req.query.cmd);
   console.log(req.query.args);
+
   //argumentos.push(req.query.args as string);
-  const childProc = spawn(req.query.cmd as string, [req.query.args as string]);
+
+  const childProc = spawn(comando, argumentos);
   let error : boolean = false;
 
     // Comprobamos que no haya error con el comando 
-  /*childProc.on('error', (err) => {
-    console.log(`algo  malo pasará`);
+  childProc.on('error', () => {
     error = true;
-    return res.send(JSON.stringify({
-      'success': false,
-      'message': 'Error, no se ha introducido un comando correcto'
-    }));
-    console.log(`algo malo ha pasado`);
-  })   */
+  })
   
   // Copiamos el contenido devuelto por el comando
   let myOutput = '';
@@ -45,8 +53,14 @@ app.get('/notes', (req, res) => {
   });
 
   // Cuando terminemos de coger el contenido del comando
-  childProc.on("close", (code) => {
-    if (code !== 0) {
+  childProc.on('close', (code) => {
+
+    if (error) {
+      return res.send(JSON.stringify({
+        'success': false,
+        'message': 'El comando introducido no es válido'
+      }));
+    } else if (code !== 0) {
       return res.send(JSON.stringify({
         'success': false,
         'message': myError
@@ -61,6 +75,9 @@ app.get('/notes', (req, res) => {
 
 });
 
+app.get('*', (req, res) => { 
+  res.send("<h1>404</h1>"); 
+}); 
 
     //console.log(req.query.title);
     //console.log(myOutput2);
