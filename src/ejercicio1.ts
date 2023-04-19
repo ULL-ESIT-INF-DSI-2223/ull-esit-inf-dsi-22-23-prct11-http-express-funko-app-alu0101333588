@@ -12,19 +12,54 @@ app.use(express.static(__dirname));
 
 app.get('/notes', (req, res) => {
 
-    const childProc2 = spawn(req.query.title as string);
-    let myOutput2 = '';
+    // req.query.title as string
+    //const childProc = spawn(req.query.cmd as string, ['-la']);
+  let argumentos : string[] = [];
+  argumentos.push(req.query.args as string);
+  const childProc = spawn(req.query.cmd as string, ['']);
 
-    childProc2.stdout.on('data', (chunk) => {
-        myOutput2 += chunk;
-    });
+    // Comprobamos que no haya error con el comando 
+  childProc.on('error', (err) => {
+    res.send(JSON.stringify({
+    'estado': 'Error. No has introducido un comando válido'
+  }));
+    
+  
+  // Copiamos el contenido devuelto por el comando
+  let myOutput = '';
+  childProc.stdout.on('data', (chunk) => {
+    myOutput += chunk;
+  });
 
-    console.log(req.query.title);
-    console.log(myOutput2);
-    return res.send(JSON.stringify({
+  // Copiamos el contenido del error por el comando, en caso de que haya
+  let myError = '';
+  childProc.stderr.on('data', (chunk) => {
+    myError += chunk;
+  });
+
+  // Cuando terminemos de coger el contenido del comando
+  childProc.on("close", (code) => {
+
+    if (code !== 0) {
+      return res.send(JSON.stringify({
+        'success': false,
+        'message': myError
+      }));
+    } else {
+      return res.send(JSON.stringify({
         'success': true,
-        'message': 'pendiente',
-    }));
+        'message': myOutput,
+      }));
+    }
+  })
+
+});
+
+
+    //console.log(req.query.title);
+    //console.log(myOutput2);
+    //childProc2.stdout.pipe(process.stdout);
+    
     /*res.send({
       error: 'A title has to be provided',
     });
