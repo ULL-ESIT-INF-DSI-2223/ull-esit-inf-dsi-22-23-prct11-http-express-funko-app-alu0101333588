@@ -6,8 +6,8 @@ import {spawn} from 'child_process';
 
 const app = express();
 
-const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../public');
-app.use(express.static(__dirname));
+//const __dirname = join(dirname(fileURLToPath(import.meta.url)), '../public');
+//app.use(express.static(__dirname));
 
 
 app.get('/notes', (req, res) => {
@@ -15,15 +15,22 @@ app.get('/notes', (req, res) => {
     // req.query.title as string
     //const childProc = spawn(req.query.cmd as string, ['-la']);
   let argumentos : string[] = [];
-  argumentos.push(req.query.args as string);
-  const childProc = spawn(req.query.cmd as string, ['']);
+  console.log(req.query.cmd);
+  console.log(req.query.args);
+  //argumentos.push(req.query.args as string);
+  const childProc = spawn(req.query.cmd as string, [req.query.args as string]);
+  let error : boolean = false;
 
     // Comprobamos que no haya error con el comando 
-  childProc.on('error', (err) => {
-    res.send(JSON.stringify({
-    'estado': 'Error. No has introducido un comando válido'
-  }));
-    
+  /*childProc.on('error', (err) => {
+    console.log(`algo  malo pasará`);
+    error = true;
+    return res.send(JSON.stringify({
+      'success': false,
+      'message': 'Error, no se ha introducido un comando correcto'
+    }));
+    console.log(`algo malo ha pasado`);
+  })   */
   
   // Copiamos el contenido devuelto por el comando
   let myOutput = '';
@@ -39,7 +46,6 @@ app.get('/notes', (req, res) => {
 
   // Cuando terminemos de coger el contenido del comando
   childProc.on("close", (code) => {
-
     if (code !== 0) {
       return res.send(JSON.stringify({
         'success': false,
@@ -51,7 +57,7 @@ app.get('/notes', (req, res) => {
         'message': myOutput,
       }));
     }
-  })
+  });
 
 });
 
@@ -99,7 +105,7 @@ app.get('/notes', (req, res) => {
       }
     });
     */
-});
+//});
 
 app.listen(3000, () => {
   console.log('Server is up on port 3000');
