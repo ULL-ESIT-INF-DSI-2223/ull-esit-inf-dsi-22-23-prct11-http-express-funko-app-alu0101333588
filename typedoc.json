@@ -1,6 +1,11 @@
 {
     "entryPoints": [
-      "./src/ejercicio1.ts"
+      "./src/ColeccionFunkos.ts",
+      "./src/ejercicioPE.ts",
+      "./src/Funko.ts",
+      "./src/funkoExpressServer.ts",
+      "./src/genero.ts",
+      "./src/tipoPop.ts"
     ],
     "out": "./docs"
   }
