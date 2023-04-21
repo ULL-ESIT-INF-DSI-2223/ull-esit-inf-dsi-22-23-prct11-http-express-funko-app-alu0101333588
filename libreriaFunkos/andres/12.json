@@ -1,0 +1,12 @@
+{
+  "_ID": 12,
+  "_nombre": "funkazo",
+  "_descripcion": "bonita descripcion",
+  "_tipo": "Pop!",
+  "_genero": "Animacion",
+  "_franquicia": "Star Wars",
+  "_numero": 78,
+  "_exclusivo": false,
+  "_caracteristicasEspeciales": "tiene alas",
+  "_valorMercado": 150
+}

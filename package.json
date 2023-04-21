@@ -1,10 +1,10 @@
 {
   "name": "ull-esit-inf-dsi-22-23-prct11-http-express-funko-app-alu0101333588",
   "version": "1.0.0",
-  "main": "ejercicioPE.js",
+  "main": "funkoExpressServer.js",
   "type": "module",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/ejercicioPE.js\"",
+    "start": "tsc-watch --onSuccess \"node dist/funkoExpressServer.js\"",
     "doc": "typedoc",
     "test": "mocha",
     "coverage": "c8 npm test && c8 report --reporter=lcov"
